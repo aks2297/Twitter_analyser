@@ -14,21 +14,24 @@ parser.add_argument('--max', type=int, help='Maximum number of tweets in the CSV
 args = parser.parse_args()
 max_size=args.max
 search = args.search_tw  
-consumer_key='yrPhgViZxqnvWE89aGV1d2Dj6'
-consumer_secret='zsPqK5MO0Mii7CqT9EHpFumr8ow2GOQXtjhbjFiBcftg35y9mQ'
+#replace the '&' in the following variables with your own keys and tokens
+consumer_key='&&&&'
+consumer_secret='&&&&'
 
-access_token='809806935390175232-MwqFln1hNaYQSaaC45HHRiTKNETdzTC'
-access_token_secret='mlUH34ZBFUrzizuoQBeQP1elIfVHBW2Tzi3pX5VbFit6N'
+access_token='&&&&&'
+access_token_secret='&&&&'
 
 auth=OAuthHandler(consumer_key,consumer_secret)
 auth.set_access_token(access_token,access_token_secret)
-count=1
+count=1 
+#to keep a count of how many tweets are being executed 
 arr=np.array(['Statement', 'Senti_val'])
 api=tweepy.API(auth)
 class SentiCalc(tweepy.StreamListener):
     def on_status(self, status):
         global count, arr
-        analysis = TextBlob(status.text)
+        analysis = TextBlob(status.text) 
+        #analysis of tweetss
         if analysis.sentiment.polarity > 0.3:
             Sent = 'Positive'
         elif analysis.sentiment.polarity < 0.3:
@@ -37,6 +40,7 @@ class SentiCalc(tweepy.StreamListener):
             Sent =	'Neutral'
             
         tw = (status.text).encode('utf-8')
+        #encoding of tweets to understandable format(we can use djangoUtils class too
         if '@' in tw:
             tw = tw.split(':') 
             if len(tw) > 1:
@@ -50,4 +54,4 @@ class SentiCalc(tweepy.StreamListener):
 SentiCalc=SentiCalc()
 myStream = tweepy.Stream(auth=api.auth, listener=SentiCalc, languages=["en"]) 
 myStream.filter(track=['{}'.format(search)])
-
+#streaming of the tweets with the name you entered in search_tw
